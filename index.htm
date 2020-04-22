@@ -1,0 +1,140 @@
+<HTML>
+<HEAD>
+<TITLE>
+Block Skater
+</TITLE>
+<LINK REL="shortcut icon" HREF="favicon.ico"> 
+<style type="text/css">
+<!--
+.space {
+   height: 480px;
+   width: 160px;
+}
+.big {
+   font-weight: bold;
+	color: #44404C;
+	background: #BBBBBB;
+   font-size: 24pt;
+}
+.hide {
+   font-weight: bold;
+	color: #BBBBBB;
+	background: #BBBBBB;
+   font-size: 24pt;
+}
+.bld {
+   font-weight: bold;
+   font-family: '!Bitstream Vera Sans';
+	color: #000000;
+   font-size: 16pt;
+}
+.white {
+   font-weight: bold;
+	font-family: '!Bitstream Vera Sans';
+	color: #FFFFFF;
+	background: #24202A;
+	font-size: 12pt;
+}
+span {
+	font-family: '!Bitstream Vera Sans';
+	color: #000000;
+	background: #FFFFFF;
+	font-size: 12pt;
+}
+// -->
+</style>
+</HEAD>
+<BODY BGCOLOR="44404C" onload="frames['winFrame'].focus();">
+
+<CENTER>
+<span class="hide">------<span class="big">Block Skater</span>------</span>
+</CENTER>
+
+
+<TABLE BORDER="0" CELLPADDING="5" CELLSPACING="16">
+<TR>
+<TD COLSPAN="1" BGCOLOR="24202A">
+<span class="white">
+Password: <INPUT id="pw" type="text" size="20" value="" onchange="pwGo();">
+<INPUT type="button" value="GO" onClick="pwGo();">
+</span>
+</TD>
+</TR>
+<TR>
+<TD COLSPAN="1" BGCOLOR="24202A">
+<CENTER>
+<IFRAME name="winFrame" src="levels/level01.html" width="602" height="402" scrolling="no" frameborder="1">
+[Your user agent does not support frames or is currently configured not to display frames.]
+</IFRAME>
+</CENTER>
+</TD>
+</TR>
+
+</TD>
+<TD COLSPAN="1" BGCOLOR="24202A">
+<P align=right>
+<span class="white">Programmed by: Crailin Mogged</span>
+</P>
+</TD>
+</TR>
+
+</TD>
+<TD COLSPAN="1" BGCOLOR="FFFFFF">
+<span>
+<span class="bld">
+<CENTER>About The Game</CENTER>
+</span>
+Block Skater is a logic game in which you move and smash boxes in a certain way to achieve your goal.
+In the game you are playing a skateboarder who is looking for his cat.
+There are 8 levels which increase in difficulty as you progress through the game. 
+Your objective is to break all of the boxes in each level.
+<BR><BR>
+
+<span class="bld">
+<CENTER>How To Play</CENTER>
+</span>
+To win the game, break all of the boxes in each level until you find the cat. 
+Use [k] and [l] to move around and over blocks. 
+Press [a] to lift a box so you can move it to another location.
+Press [s] to break boxes.
+In order to lift or break a box you have to be right next to and facing towards it.
+<BR><BR>
+<span class="bld">
+<CENTER>Notes</CENTER>
+</span>
+Remember to click inside the game window before playing if it is not in focus.
+Some browsers may not support javascript.
+<BR><BR>
+</span>
+</TD>
+</TR>
+
+</TABLE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function pwGo()
+{
+   if (document.getElementById('pw').value == "sandy")
+   frames['winFrame'].location.href = "levels/level02.html";
+   if (document.getElementById('pw').value == "scorched")
+   frames['winFrame'].location.href = "levels/level03.html";
+   if (document.getElementById('pw').value == "muddy")
+   frames['winFrame'].location.href = "levels/level04.html";
+   if (document.getElementById('pw').value == "sandyorange")
+   frames['winFrame'].location.href = "levels/level05.html";
+   if (document.getElementById('pw').value == "scorchedyellow")
+   frames['winFrame'].location.href = "levels/level06.html";
+   if (document.getElementById('pw').value == "muddyrain")
+   frames['winFrame'].location.href = "levels/level07.html";
+   if (document.getElementById('pw').value == "grassypink")
+   frames['winFrame'].location.href = "levels/level08.html";
+   frames['winFrame'].focus();
+   document.getElementById('pw').value = "";
+}
+// -->
+</SCRIPT>
+
+
+</BODY>
+</HTML>

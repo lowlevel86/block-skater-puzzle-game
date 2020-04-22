@@ -1,0 +1,1297 @@
+<HTML>
+<HEAD>
+<STYLE type="text/css">
+.winNote {
+	position: absolute;
+	height: 200px;
+	width: 300px;
+	background-color: CCCCCC;
+	border: 1px solid gray;
+	top: 100px;
+	left: 150px;
+	z-index:4;
+	display:none;
+}
+span {
+	font-family: '!Bitstream Vera Sans';
+	color: #000000;
+	font-size: 11pt;
+}ize: 11pt;
+}
+</STYLE>
+</HEAD>
+<BODY bgcolor='AAAAAA' onkeyDown='ieKeyDwn()' onkeyUp='ieKeyUp()'>
+
+<IMG SRC='pics/bg03.jpg' STYLE='position:absolute; top:0; left:0; z-index:0'>
+<IMG id='standR' SRC='pics/standR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='standL' SRC='pics/standL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='skateR' SRC='pics/skateR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='skateL' SRC='pics/skateL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='readyR' SRC='pics/readyR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='readyL' SRC='pics/readyL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='holdR' SRC='pics/holdR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='holdL' SRC='pics/holdL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='pickupR' SRC='pics/pickupR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='pickupL' SRC='pics/pickupL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='moveR' SRC='pics/moveR.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='moveL' SRC='pics/moveL.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='hit' SRC='pics/hit.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+
+<IMG id='bb0' SRC='pics/brokenbox.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='bb1' SRC='pics/brokenbox.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='bb2' SRC='pics/brokenbox.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+<IMG id='bb3' SRC='pics/brokenbox.gif' STYLE='position:absolute; top:-80; left:-80; z-index:3'>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+if(/*@cc_on!@*/0 == 0)
+{
+	document.onkeypress = KeyPressMoveIt;
+	document.onkeydown = KeyDownMoveIt;
+	document.onkeyup = KeyUpMoveIt;
+}
+
+var blockT = new Array();
+var blockL = new Array();
+var boxT  = new Array();
+var boxL  = new Array();
+var T = new Array();
+var B = new Array();
+var L = new Array();
+var R = new Array();
+
+// Skater Data
+var faceLeft = 0;
+var skaterTop = 200;
+var skaterLeft = 120;
+
+// Block Data
+var BlockNum = 24;
+blockT[0] = 160; blockL[0] = 360;
+blockT[1] = 160; blockL[1] = 400;
+blockT[2] = 160; blockL[2] = 440;
+blockT[3] = 240; blockL[3] = 0;
+blockT[4] = 240; blockL[4] = 40;
+blockT[5] = 240; blockL[5] = 80;
+blockT[6] = 240; blockL[6] = 120;
+blockT[7] = 240; blockL[7] = 160;
+blockT[8] = 240; blockL[8] = 200;
+blockT[9] = 240; blockL[9] = 400;
+blockT[10] = 240; blockL[10] = 440;
+blockT[11] = 240; blockL[11] = 480;
+blockT[12] = 240; blockL[12] = 520;
+blockT[13] = 240; blockL[13] = 560;
+blockT[14] = 280; blockL[14] = 200;
+blockT[15] = 280; blockL[15] = 400;
+blockT[16] = 320; blockL[16] = 200;
+blockT[17] = 320; blockL[17] = 400;
+blockT[18] = 360; blockL[18] = 200;
+blockT[19] = 360; blockL[19] = 240;
+blockT[20] = 360; blockL[20] = 280;
+blockT[21] = 360; blockL[21] = 320;
+blockT[22] = 360; blockL[22] = 360;
+blockT[23] = 360; blockL[23] = 400;
+
+// Box Data
+var BoxNum = 5;
+boxT[0] = 120; boxL[0] = 400;
+boxT[1] = 160; boxL[1] = 0;
+boxT[2] = 200; boxL[2] = 0;
+boxT[3] = 200; boxL[3] = 40;
+boxT[4] = 200; boxL[4] = 560;
+
+// Block Area Data
+var barea = 7;
+T[1]=160; B[1]=200; L[1]=360; R[1]=480;
+T[2]=240; B[2]=280; L[2]=400; R[2]=560;
+T[3]=240; B[3]=280; L[3]=0; R[3]=200;
+T[4]=240; B[4]=360; L[4]=200; R[4]=240;
+T[5]=240; B[5]=280; L[5]=440; R[5]=600;
+T[6]=280; B[6]=400; L[6]=400; R[6]=440;
+T[0]=360; B[0]=400; L[0]=200; R[0]=400;
+
+var standR = document.getElementById('standR').style;
+var standL = document.getElementById('standL').style;
+
+var skateR = document.getElementById('skateR').style;
+var skateL = document.getElementById('skateL').style;
+
+var readyR = document.getElementById('readyR').style;
+var readyL = document.getElementById('readyL').style;
+
+var holdR = document.getElementById('holdR').style;
+var holdL = document.getElementById('holdL').style;
+
+var pickupR = document.getElementById('pickupR').style;
+var pickupL = document.getElementById('pickupL').style;
+
+var moveR = document.getElementById('moveR').style;
+var moveL = document.getElementById('moveL').style;
+
+var hit = document.getElementById('hit').style;
+
+document.write('<DIV class="winNote" id="winNote"><CENTER><TABLE WIDTH="100%" HEIGHT="100%" BORDER="0"><TR><TD><CENTER><span>Level 03 cleared!<BR><BR>Password: muddy<BR><BR><INPUT type="button" id="endNote" value="Ok" onClick="nextLevel();"></span></CENTER></TD></TR></TABLE><CENTER></DIV>'); 
+function nextLevel()
+{
+    window.location = "./level04.html";
+}
+
+// Blocks
+var bk = new Array();
+for (i=0; i < BlockNum; i++)
+{
+	document.write('<IMG id="block' + i + '" SRC="pics/block.gif" STYLE="position: absolute; z-index:2">');
+	bk[i] = document.getElementById('block' + i).style;
+	bk[i].top = blockT[i];
+	bk[i].left = blockL[i];
+}
+// Blocks
+
+// Boxes
+var bx = new Array();
+for (i=0; i < BoxNum; i++)
+{
+	document.write('<IMG id="box' + i + '" SRC="pics/box.gif" STYLE="position: absolute; display:inline; z-index:2">');
+	bx[i] = document.getElementById('box' + i).style;
+	bx[i].top = boxT[i];
+	bx[i].left = boxL[i];
+}
+// Boxes
+
+// Broken Boxes
+var bb = new Array();
+bb[0] = document.getElementById('bb0').style;
+bb[1] = document.getElementById('bb1').style;
+bb[2] = document.getElementById('bb2').style;
+bb[3] = document.getElementById('bb3').style;
+// Broken Boxes
+
+
+// variables
+var skaterT;
+var skaterL;
+
+var moveHimRight = 0;
+var moveHimLeft = 0;
+var moveHimDown = 0;
+var moveBoxDown = 0;
+var boxfall = 0;
+var boxfall2 = 0;
+var moveDown;
+var fall = 0;
+
+var abox;
+var Bblock = 0;
+
+var noputdown = 0;
+var x = 0;
+var Tblock = 0;
+var Lblock = 0;
+
+var nolift1 = 0;
+var nolift2 = 0;
+var debugMove;
+var timeCheck;
+
+var swing;
+var swLeft;
+
+var bbT;
+var bbL;
+var finish;
+var keyC = 0;
+var asLock = 0;
+var gSwitch = 0;
+// variables
+
+function ieKeyDwn()
+{
+	if(/*@cc_on!@*/0)
+	{
+		keyC = 0;
+		if (window.event.keyCode == 65)
+		keyC = 65;
+		if (window.event.keyCode == 83)
+		keyC = 83;
+		if (window.event.keyCode == 40)
+		keyC = 65;
+		if (window.event.keyCode == 38)
+		keyC = 83;
+		if (asLock == 0)
+		moveItNow();
+		asLock = 1;
+		keyC = 0;
+		if (window.event.keyCode == 39)
+		keyC = 39;
+		if (window.event.keyCode == 37)
+		keyC = 37;
+		if (window.event.keyCode == 76)
+		keyC = 39;
+		if (window.event.keyCode == 75)
+		keyC = 37;
+		moveItNow();
+	}
+}
+function ieKeyUp()
+{
+	if(/*@cc_on!@*/0)
+	{
+		if (window.event.keyCode == 83)
+		keyC = 83;
+		if (window.event.keyCode == 65)
+		keyC = 65;
+		if (window.event.keyCode == 40)
+		keyC = 65;
+		if (window.event.keyCode == 38)
+		keyC = 83;
+		moveOnUp();
+		asLock = 0;
+	}
+}
+
+function KeyDownMoveIt(e)
+{
+	keyC = 0;
+	if (e.keyCode == 65)
+	keyC = 65;
+	if (e.keyCode == 83)
+	keyC = 83;
+	if (e.keyCode == 40)
+	keyC = 65;
+	if (e.keyCode == 38)
+	keyC = 83;
+	moveItNow();
+	keyC = 0;
+	if (e.keyCode == 76)
+	keyC = 39;
+	if (e.keyCode == 75)
+	keyC = 37;
+}
+function KeyPressMoveIt(e)
+{
+	if (e.keyCode == 39)
+	keyC = 39;
+	if (e.keyCode == 37)
+	keyC = 37;
+	if (e.keyCode == 74)
+	keyC = 39;
+	if (e.keyCode == 75)
+	keyC = 37;
+	moveItNow();
+}
+function KeyUpMoveIt(e)
+{
+	if (e.keyCode == 83)
+	keyC = 83;
+	if (e.keyCode == 65)
+	keyC = 65;
+	if (e.keyCode == 40)
+	keyC = 65;
+	if (e.keyCode == 38)
+	keyC = 83;
+	moveOnUp();
+}
+
+
+standR.display = "none";
+standL.display = "none";
+skateR.display = "none";
+skateL.display = "none";
+readyR.display = "none";
+readyL.display = "none";
+pickupR.display = "none";
+pickupL.display = "none";
+moveR.display = "none";
+moveL.display = "none";
+holdR.display = "none";
+holdL.display = "none";
+hit.display = "none";
+for (i=0; i < 4; i++)
+bb[i].display = "none";
+
+if (faceLeft == 1)
+standL.display = "inline";
+if (faceLeft == 0)
+standR.display = "inline";
+skaterT = skaterTop;
+skaterL = skaterLeft;
+movedude();
+
+//////////////////// On Key Down ////////////////////
+function moveItNow()
+{
+	if (fall == 0)
+	{
+		//Move skater align with block
+		if (keyC == 65)
+		{
+			if ((standR.display == "inline") || (pickupR.display == "inline"))
+			if ((skaterL+80)%40 == 30)
+			{
+				skaterL = skaterL + 10;
+				movedude();
+				gSwitch = 1;
+			}
+			if ((standL.display == "inline") || (pickupL.display == "inline"))
+			if ((skaterL+80)%40 == 10)
+			{
+				skaterL = skaterL - 10;
+				movedude();
+				gSwitch = 1;
+			}
+		}
+		if (keyC == 83)
+		{
+			if (standR.display == "inline")
+			if ((skaterL+80)%40 == 30)
+			{
+				skaterL = skaterL + 10;
+				movedude();
+				gSwitch = 1;
+			}
+			if (standL.display == "inline")
+			if ((skaterL+80)%40 == 10)
+			{
+				skaterL = skaterL - 10;
+				movedude();
+				gSwitch = 1;
+			}
+		}
+	
+		//Smash Box
+		if ((keyC == 83) && (standR.display == "inline") && (skaterL+40 < 600) && (boxfall == 0))
+		{
+			Tblock = skaterT + 40;
+			Lblock = skaterL + 40;
+			
+			for (i=0; i < barea; i++)
+			{
+				if ((skaterL+40 >= L[i]) && (skaterL+40 < R[i]) && (skaterT > T[i]))
+				{
+					Bblock = T[i];
+				}
+			}
+			
+			standR.display = "none";
+			standL.display = "none";
+			skateR.display = "none";
+			skateL.display = "none";
+			readyR.display = "inline";
+			readyL.display = "none";
+			pickupR.display = "none";
+			pickupL.display = "none";
+			moveR.display = "none";
+			moveL.display = "none";
+			holdR.display = "none";
+			holdL.display = "none";
+			hit.display = "none";
+		}
+		
+		if ((keyC == 83) && (standL.display == "inline") && (boxfall == 0))
+		{
+			Tblock = skaterT + 40;
+			Lblock = skaterL - 40;
+			
+			for (i=0; i < barea; i++)
+			{
+				if ((skaterL-40 >= L[i]) && (skaterL-40 < R[i]) && (skaterT > T[i]))
+				{
+					Bblock = T[i];
+				}
+			}
+			
+			standR.display = "none";
+			standL.display = "none";
+			skateR.display = "none";
+			skateL.display = "none";
+			readyR.display = "none";
+			readyL.display = "inline";
+			pickupR.display = "none";
+			pickupL.display = "none";
+			moveR.display = "none";
+			moveL.display = "none";
+			holdR.display = "none";
+			holdL.display = "none";
+			hit.display = "none";
+		}
+		//End of Smash Box
+		
+		//Get Ready to Lift
+		if ((keyC == 65) && (standR.display == "inline") && (skaterL+40 < 600) && (x == 0) && (boxfall == 0))
+		{
+			nolift1 = 0;
+			for (i=0; i < BoxNum; i++)
+			if ((skaterT == parseInt(bx[i].top)+40) && (skaterL <= parseInt(bx[i].left)) && (skaterL+40 >= parseInt(bx[i].left)))
+			nolift1 = 1;
+			for (i=0; i < BlockNum; i++)
+			if ((skaterT == parseInt(bk[i].top)+40) && (skaterL <= parseInt(bk[i].left)) && (skaterL+40 >= parseInt(bk[i].left)))
+			nolift1 = 1;
+				
+			holdR.left = skaterL+5;
+			holdR.top = skaterT;
+			standR.display = "none";
+			standL.display = "none";
+			skateR.display = "none";
+			skateL.display = "none";
+			readyR.display = "none";
+			readyL.display = "none";
+			pickupR.display = "none";
+			pickupL.display = "none";
+			moveR.display = "none";
+			moveL.display = "none";
+			holdR.display = "inline";
+			holdL.display = "none";
+			hit.display = "none";
+		}
+		
+		if ((keyC == 65) && (standL.display == "inline") && (x == 0) && (boxfall == 0))
+		{
+			nolift2 = 0;
+			for (i=0; i < BoxNum; i++)
+			if ((skaterT == parseInt(bx[i].top)+40) && (skaterL >= parseInt(bx[i].left)) && (skaterL-40 <= parseInt(bx[i].left)))
+			nolift2 = 1;
+			for (i=0; i < BlockNum; i++)
+			if ((skaterT == parseInt(bk[i].top)+40) && (skaterL >= parseInt(bk[i].left)) && (skaterL-40 <= parseInt(bk[i].left)))
+			nolift2 = 1;
+				
+			holdL.left = skaterL-5;
+			holdL.top = skaterT;
+			standR.display = "none";
+			standL.display = "none";
+			skateR.display = "none";
+			skateL.display = "none";
+			readyR.display = "none";
+			readyL.display = "none";
+			pickupR.display = "none";
+			pickupL.display = "none";
+			moveR.display = "none";
+			moveL.display = "none";
+			holdR.display = "none";
+			holdL.display = "inline";
+			hit.display = "none";
+		}
+		//End of Get Ready to Lift
+		
+		//Put Down Box
+		if ((keyC == 65) && (pickupR.display == "inline") && (boxfall == 0))
+		{
+			noputdown = 0;
+			if (skaterL+40 == 600)
+			{
+				noputdown = 1;
+			}
+			for (i=0; i < BlockNum; i++)
+			{
+				if ((skaterT-40 == parseInt(bk[i].top)) && (skaterL+40 == parseInt(bk[i].left)))
+				{
+					noputdown = 1;
+					i = BlockNum;
+				}
+			}
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((skaterT-40 == parseInt(bx[i].top)) && (skaterL+40 == parseInt(bx[i].left)))
+				{
+					noputdown = 1;
+					i = BoxNum;
+				}
+			}
+			
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((parseInt(bx[i].top) == -80) && (parseInt(bx[i].left) == -80) && (noputdown == 0))
+				{
+					if ((skaterL+80)%40 == 10)
+					{
+						skaterL = skaterL - 10;
+					}
+					
+					if ((skaterL+80)%40 == 20)
+					{
+						skaterL = skaterL - 20;
+					}
+					
+					if ((skaterL+80)%40 == 30)
+					{
+						skaterL = skaterL - 30;
+					}
+					
+					bx[i].display = "inline";
+					bx[i].left = skaterL+40;
+					bx[i].top = skaterT-40;
+					standR.display = "inline";
+					pickupR.display = "none";
+					abox = bx[i];
+					i = BoxNum;
+				}
+			}
+			if (noputdown == 0)
+			{
+				movedude();
+				gravity();
+				boxgravity();
+			}
+		}
+		
+		
+		if ((keyC == 65) && (pickupL.display == "inline") && (boxfall == 0))
+		{
+			noputdown = 0;
+			if (skaterL == 0)
+			{
+				noputdown = 1;
+			}
+			for (i=0; i < BlockNum; i++)
+			{
+				if ((skaterT-40 == parseInt(bk[i].top)) && (skaterL-40 == parseInt(bk[i].left)))
+				{
+					noputdown = 1;
+					i = BlockNum;
+				}
+			}
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((skaterT-40 == parseInt(bx[i].top)) && (skaterL-40 == parseInt(bx[i].left)))
+				{
+					noputdown = 1;
+					i = BoxNum;
+				}
+			}
+			
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((parseInt(bx[i].top) == -80) && (parseInt(bx[i].left) == -80) && (noputdown == 0))
+				{
+					if ((skaterL+80)%40 == 10)
+					{
+						skaterL = skaterL + 30;
+					}
+					
+					if ((skaterL+80)%40 == 20)
+					{
+						skaterL = skaterL + 20;
+					}
+					
+					if ((skaterL+80)%40 == 30)
+					{
+						skaterL = skaterL + 10;
+					}
+					
+					bx[i].display = "inline";
+					bx[i].left = skaterL-40;
+					bx[i].top = skaterT-40;
+					standL.display = "inline";
+					pickupL.display = "none";
+					abox = bx[i];
+					i = BoxNum;
+				}
+			}
+			if (noputdown == 0)
+			{
+				movedude();
+				gravity();
+				boxgravity();
+			}
+		}
+		//End of Put Down Box
+		
+		//Move Right
+		if ((keyC == 39) && (skaterL+40 < 600) && (boxfall == 0))
+		{
+			if ((pickupR.display == "inline") || (moveR.display == "inline") || (pickupL.display == "inline") || (moveL.display == "inline"))
+			{
+				for (i=0; i < BoxNum; i++)
+				{
+					if ((skaterL+40 == parseInt(bx[i].left)) && (skaterT == parseInt(bx[i].top)))
+					moveHimRight = 1;
+					if ((skaterL+40 == parseInt(bx[i].left)) && (skaterT-40 == parseInt(bx[i].top)))
+					{
+						moveHimRight = 2;
+						i = BoxNum;
+					}
+				}
+				if (moveHimRight != 2)
+				{
+					for (i=0; i < barea; i++)
+					{
+						i = barea - i
+						if ((skaterL+40 == L[i]) && (skaterT == T[i]))
+						{
+							moveHimRight = 1;
+						}
+						i = barea - i
+						if ((skaterL+40 == L[i]) && (skaterT > T[i]) && (skaterT <= B[i]))
+						{
+							moveHimRight = 2;
+							i = barea;
+						}
+						if ((moveHimRight == 1) && (skaterT-40 == B[i]) && (skaterL+40 >= L[i]) && (skaterL+40 <= R[i]))
+						{
+							moveHimRight = 2;
+							i = barea;
+						}
+					}
+				}
+				moveR.display = "inline";
+				moveL.display = "none";
+				pickupR.display = "none";
+				pickupL.display = "none";
+			}
+			else
+			{
+				if (moveHimRight != 2)
+				{
+					for (i=0; i < BoxNum; i++)
+					{
+						if ((skaterL+40 == parseInt(bx[i].left)) && (skaterT == parseInt(bx[i].top)))
+						{
+							moveHimRight = 1;
+						}
+						if ((skaterL+40 == parseInt(bx[i].left)) && (skaterT-40 == parseInt(bx[i].top)))
+						{
+							moveHimRight = 2;
+							i = BoxNum;
+						}
+					}
+				}
+				debugMove = 0;
+				for (i=0; i < barea; i++)
+				{
+					if ((moveHimRight != 2) && (skaterL+40 == L[i]) && (skaterT == T[i]))
+					{
+						moveHimRight = 1;
+						
+						if (debugMove == 1)
+						{
+							moveHimRight = 2;
+						}
+					}
+					if ((skaterL+40 == L[i]) && (skaterT > T[i]) && (skaterT < B[i]))
+					{
+						moveHimRight = 2;
+						i = barea;
+					}
+					if ((moveHimRight == 1) && (skaterT == B[i]) && (skaterL+40 >= L[i]) && (skaterL+40 <= R[i]))
+					{
+						moveHimRight = 2;
+						i = barea;
+					}
+					if ((skaterT == B[i]) && (skaterL+40 >= L[i]) && (skaterL+40 <= R[i]))
+					{
+						debugMove = 1;
+					}
+				}
+				skateR.display = "inline";
+				skateL.display = "none";
+				standR.display = "none";
+				standL.display = "none";
+				readyR.display = "none";
+				readyL.display = "none";
+				holdR.display = "none";
+				holdL.display = "none";
+				hit.display = "none";
+			}
+			
+			if (moveHimRight == 1)
+			{
+				skaterT  = skaterT - 40;
+				skaterL = skaterL + 10;
+			}
+			if (moveHimRight == 0)
+			{
+				skaterL = skaterL + 10;
+				movedude();
+			}
+			moveHimRight = 0;
+			
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((skaterT+40 == parseInt(bx[i].top)) && (skaterL < parseInt(bx[i].left)+40) && (skaterL+40 > parseInt(bx[i].left)))
+				{
+					moveHimDown = 1;
+					i = BoxNum;
+				}
+			}
+			
+			for (i=0; i < BlockNum; i++)
+			{
+				if ((skaterT+40 == parseInt(bk[i].top)) && (skaterL < parseInt(bk[i].left)+40) && (skaterL+40 > parseInt(bk[i].left)))
+				{
+					moveHimDown = 1;
+					i = BlockNum;
+				}
+			}
+			
+			if (moveHimDown == 1)
+			{
+				moveHimDown = 0;
+			}
+			else
+			{
+				skaterT = skaterT + 10;
+				moveHimDown = 0;
+				movedude();
+				gravity();
+			}
+		}
+		//End of Move Right
+		
+		//Move Left
+		if ((keyC == 37) && (skaterL > 0) && (boxfall == 0))
+		{
+			if ((pickupR.display == "inline") || (moveR.display == "inline") || (pickupL.display == "inline") || (moveL.display == "inline"))
+			{
+				for (i=0; i < BoxNum; i++)
+				{
+					if ((skaterL-40 == parseInt(bx[i].left)) && (skaterT == parseInt(bx[i].top)))
+					moveHimLeft = 1;
+					if ((skaterL-40 == parseInt(bx[i].left)) && (skaterT-40 == parseInt(bx[i].top)))
+					{
+						moveHimLeft = 2;
+						i = BoxNum;
+					}
+				}
+				
+				if (moveHimLeft != 2)
+				{
+					for (i=0; i < barea; i++)
+					{
+						i = barea - i
+						if ((skaterL == R[i]) && (skaterT == T[i]))
+						{
+							moveHimLeft = 1;
+						}
+						i = barea - i
+						if ((skaterL == R[i]) && (skaterT > T[i]) && (skaterT <= B[i]))
+						{
+							moveHimLeft = 2;
+							i = barea;
+						}
+						if ((moveHimLeft == 1) && (skaterT-40 == B[i]) && (skaterL >= L[i]) && (skaterL <= R[i]))
+						{
+							moveHimLeft = 2;
+							i = barea;
+						}
+					}
+				}
+				moveR.display = "none";
+				moveL.display = "inline";
+				pickupR.display = "none";
+				pickupL.display = "none";
+			}
+			else
+			{
+				if (moveHimLeft != 2)
+				{
+					for (i=0; i < BoxNum; i++)
+					{
+						if ((skaterL-40 == parseInt(bx[i].left)) && (skaterT == parseInt(bx[i].top)))
+						{
+							moveHimLeft = 1;
+						}
+						if ((skaterL-40 == parseInt(bx[i].left)) && (skaterT-40 == parseInt(bx[i].top)))
+						{
+							moveHimLeft = 2;
+							i = BoxNum;
+						}
+					
+					}
+				}
+				debugMove = 0;
+				for (i=0; i < barea; i++)
+				{
+					if ((moveHimLeft !=2 ) && (skaterL == R[i]) && (skaterT == T[i]))
+					{
+						moveHimLeft = 1;
+						
+						if (debugMove == 1)
+						{
+							moveHimLeft = 2;
+						}
+					}
+					if ((skaterL == R[i]) && (skaterT > T[i]) && (skaterT < B[i]))
+					{
+						moveHimLeft = 2;
+						i = barea;
+					}
+					if ((moveHimLeft == 1) && (skaterT == B[i]) && (skaterL >= L[i]) && (skaterL <= R[i]))
+					{
+						moveHimLeft = 2;
+						i = barea;
+					}
+					if ((skaterT == B[i]) && (skaterL >= L[i]) && (skaterL <= R[i]))
+					{
+						debugMove = 1;
+					}
+				}
+				skateR.display = "none";
+				skateL.display = "inline";
+				standR.display = "none";
+				standL.display = "none";
+				readyR.display = "none";
+				readyL.display = "none";
+				holdR.display = "none";
+				holdL.display = "none";
+				hit.display = "none";
+			}
+			
+			if (moveHimLeft == 1)
+			{
+				skaterT  = skaterT - 40;
+				skaterL = skaterL - 10;
+			}
+			if (moveHimLeft == 0)
+			{
+				skaterL = skaterL - 10;
+				movedude();
+			}
+			moveHimLeft = 0;
+				
+			
+			for (i=0; i < BoxNum; i++)
+			{
+				if ((skaterT+40 == parseInt(bx[i].top)) && (skaterL < parseInt(bx[i].left)+40) && (skaterL+40 > parseInt(bx[i].left)))
+				{
+					moveHimDown = 1;
+					i = BoxNum;
+				}
+			}
+			
+			for (i=0; i < BlockNum; i++)
+			{
+				if ((skaterT+40 == parseInt(bk[i].top)) && (skaterL < parseInt(bk[i].left)+40) && (skaterL+40 > parseInt(bk[i].left)))
+				{
+					moveHimDown = 1;
+					i = BlockNum;
+				}
+			}
+			
+			if (moveHimDown == 1)
+			{
+				moveHimDown = 0;
+			}
+			else
+			{
+				skaterT = skaterT + 10;
+				movedude();
+				gravity();
+			}
+		}
+		//End of Move Left
+		
+		if (gSwitch == 1)
+		{
+			gravity();
+			gSwitch = 0;
+		}
+	}
+}
+//////////////////// End of On Key Down ////////////////////
+
+//////////////////// On Key Up ///////////////////
+function moveOnUp()
+{
+	//Smash Box
+	if ((keyC == 83) && (readyR.display == "inline") && (bb[0].display == "none") && (boxfall == 0))
+	{
+		bb[0].left = skaterL+40;
+		bb[0].top = skaterT;
+		bb[1].left = skaterL+60;
+		bb[1].top = skaterT;
+		bb[2].left = skaterL+40;
+		bb[2].top = skaterT+20;
+		bb[3].left = skaterL+60;
+		bb[3].top = skaterT+20;
+		
+		readyR.display = "none";
+		hit.display = "inline";
+		swLeft = 0;
+		swing = 0;
+		swingTimer();
+		
+		for (i=0; i < BoxNum; i++)
+		{
+			if ((skaterT == parseInt(bx[i].top)) && (skaterL == parseInt(bx[i].left)-40))
+			{
+				bx[i].display = "none";
+				bx[i].left = -120;
+				bx[i].top = -120;
+				for (i=0; i < 4; i++)
+				{
+					bb[i].display = "inline";
+				}
+				y = 1;
+				brokenProperties();
+			}
+		}
+	}
+	
+	if ((keyC == 83) && (readyL.display == "inline") && (bb[0].display == "none") && (boxfall == 0))
+	{
+		bb[0].left = skaterL-40;
+		bb[0].top = skaterT;
+		bb[1].left = skaterL-60;
+		bb[1].top = skaterT;
+		bb[2].left = skaterL-40;
+		bb[2].top = skaterT-20;
+		bb[3].left = skaterL-60;
+		bb[3].top = skaterT-20;
+		
+		readyL.display = "none";
+		hit.display = "inline";
+		swLeft = 1;
+		swing = 0;
+		swingTimer();
+		
+		for (i=0; i < BoxNum; i++)
+		{
+			if ((skaterT == parseInt(bx[i].top)) && (skaterL == parseInt(bx[i].left)+40))
+			{
+				bx[i].display = "none";
+				bx[i].left = -120;
+				bx[i].top = -120;
+				for (i=0; i < 4; i++)
+				{
+					bb[i].display = "inline";
+				}
+				y = -1;
+				brokenProperties();
+			}
+		}
+	}
+	//End of Smash Box
+	
+	//Lift Box
+	if ((keyC == 65) && (holdR.display == "inline") && (boxfall == 0))
+	{
+		holdR.display = "none";
+		standR.display = "inline";
+		for (i=0; i < BoxNum; i++)
+		{
+			if ((skaterT == parseInt(bx[i].top)) && (skaterL == parseInt(bx[i].left)-40) && (nolift1 == 0))
+			{
+				holdR.display = "none";
+				standR.display = "none";
+				pickupR.display = "inline";
+				bx[i].display = "none";
+				bx[i].left = -80;
+				bx[i].top = -80;
+			}
+		}
+	}
+	
+	if ((keyC == 65) && (holdL.display == "inline") && (boxfall == 0))
+	{
+		holdL.display = "none";
+		standL.display = "inline";
+		for (i=0; i < BoxNum; i++)
+		{
+			if ((skaterT == parseInt(bx[i].top)) && (skaterL == parseInt(bx[i].left)+40) && (nolift2 == 0))
+			{
+				holdL.display = "none";
+				standL.display = "none";
+				pickupL.display = "inline";
+				bx[i].display = "none";
+				bx[i].left = -80;
+				bx[i].top = -80;
+			}
+		}
+	}
+	//End of Lift Box
+	
+	//Stand Face Right
+	if (keyC == 39)
+	{
+		movedude();
+		if (moveR.display == "inline")
+		{
+			pickupR.display = "inline";
+			moveR.display = "none";
+		}
+		
+		if ((skateR.display == "inline") || (standR.display == "inline"))
+		{
+			skateR.display = "none";
+			standR.display = "inline";
+			readyR.display = "none";
+			hit.display = "none";
+			holdR.display = "none";
+			pickupR.display = "none";
+		}
+	}
+	//End of Stand Face Right
+
+	//Stand Face Left
+	if (keyC == 37)
+	{
+		movedude();
+		if (moveL.display == "inline")
+		{
+			pickupL.display = "inline";
+			moveL.display = "none";
+		}
+		
+		if ((skateL.display == "inline") || (standL.display == "inline"))
+		{
+			skateL.display = "none";
+			standL.display = "inline";
+			readyL.display = "none";
+			hit.display = "none";
+			holdL.display = "none";
+			pickupL.display = "none";
+		}
+	}
+	//End of Stand Face Left
+}
+//////////////////// End of On Key Up ///////////////////
+
+
+
+//////////////////// Gravity ///////////////////
+function gravity()
+{
+	fall = 1;
+	movedude();
+	for (i=0; i < BoxNum; i++)
+	{
+		if ((skaterT+40 == parseInt(bx[i].top)) && (skaterL < parseInt(bx[i].left)+40) && (skaterL+40 > parseInt(bx[i].left)))
+		{
+			moveHimDown = 1;
+		}
+	}
+	
+	for (i=0; i < BlockNum; i++)
+	{
+		if ((skaterT+40 == parseInt(bk[i].top)) && (skaterL < parseInt(bk[i].left)+40) && (skaterL+40 > parseInt(bk[i].left)))
+		{
+			moveHimDown = 1;
+		}
+	}
+	
+	if (skateR.display == "inline")
+	{
+		standR.display = "inline";
+		skateR.display = "none";
+	}
+	if (skateL.display == "inline")
+	{
+		standL.display = "inline";
+		skateL.display = "none";
+	}
+	
+	if (moveR.display == "inline")
+	{
+		pickupR.display = "inline";
+		moveR.display = "none";
+	}
+	if (moveL.display == "inline")
+	{
+		pickupL.display = "inline";
+		moveL.display = "none";
+	}
+	
+	if (moveHimDown == 1)
+	{
+		moveHimDown = 0;
+		fall = 0;
+	}
+	else
+	{
+		skaterT = skaterT + 10;
+		setTimeout("gravity()",20);
+	}
+}
+	
+function boxgravity()
+{
+	boxfall = 1;
+	for (i=0; i < BoxNum; i++)
+	if (abox != bx[i])
+	if ((parseInt(abox.top)+40 == parseInt(bx[i].top)) && (parseInt(abox.left) < parseInt(bx[i].left)+40) && (parseInt(abox.left)+40 > parseInt(bx[i].left)))
+	moveDown = 1;
+	
+	for (i=0; i < BlockNum; i++)
+	if ((parseInt(abox.top)+40 == parseInt(bk[i].top)) && (parseInt(abox.left) < parseInt(bk[i].left)+40) && (parseInt(abox.left)+40 > parseInt(bk[i].left)))
+	moveDown = 1;
+	
+	if (moveDown == 1)
+	{
+		moveDown = 0;
+		boxfall = 0;
+	}
+	else
+	{
+		abox.top = parseInt(abox.top) + 10;
+		setTimeout('boxgravity()',20);
+	}
+}
+	
+function boxgravity2()
+{
+	for (i=0; i < BoxNum; i++)
+	{
+		if ((parseInt(bx[i].left) == Lblock) && (parseInt(bx[i].top) < Tblock) && (parseInt(bx[i].top) >= Bblock))//parseInt(Bblock.top)))
+		bx[i].top = parseInt(bx[i].top) + 10;
+	}
+	if (boxfall2 == 3)
+	{
+		fall = 0;
+		boxfall2 = 0;
+		Bblock = 0;
+	}
+	else
+	{
+		boxfall2 = boxfall2 + 1;
+		setTimeout('boxgravity2()',20);
+	}
+}
+//////////////////// End of Gravity ///////////////////
+
+
+//////////////////// Keep Images Together ////////////////////
+function movedude()
+{
+	standR.top = skaterT;
+	standR.left = skaterL;
+	skateR.top = skaterT;
+	skateR.left = skaterL;
+	readyR.top = skaterT;
+	readyR.left = skaterL;
+	pickupR.left = skaterL;
+	pickupR.top = skaterT - 30;
+	moveR.left = skaterL;
+	moveR.top = skaterT - 30;
+	standL.top = skaterT;
+	standL.left = skaterL;
+	skateL.top = skaterT;
+	skateL.left = skaterL;
+	readyL.top = skaterT;
+	readyL.left = skaterL;
+	holdL.top = skaterT;
+	holdL.left = skaterL;
+	holdR.top = skaterT;
+	holdR.left = skaterL;
+	pickupL.left = skaterL;
+	pickupL.top = skaterT - 30;
+	moveL.left = skaterL;
+	moveL.top = skaterT - 30;
+	hit.left = skaterL - 10;
+	hit.top = skaterT;
+}
+//////////////////// End of Keep Images Together ////////////////////
+
+
+//////////////////// Swing Timer ///////////////////
+function swingTimer()
+{
+	if (swing == 1)
+	{
+		hit.display = "none";
+		if ((skateL.display == "none") && (skateR.display == "none"))
+		{
+		if (swLeft == 1)
+		standL.display = "inline";
+		if (swLeft == 0)
+		standR.display = "inline";
+		}
+	}
+	if (swing == 0)
+	{
+		setTimeout('swingTimer()',180);
+		swing = 1;
+	}
+}
+//////////////////// End of Swing Timer ///////////////////
+
+
+//////////////////// Broken Box Properties ///////////////////
+function brokenProperties()
+{
+	x = x + 0.4;
+	bbT = parseInt(bb[0].top) - (5 - x);
+	if  (bbT+20 < 400) bb[0].top = bbT;
+	if  (bbT+20 >= 400) bb[0].display = "none";
+	
+	bbL = parseInt(bb[0].left) + 5 * y;
+	if  (bbL+20 < 600) bb[0].left = bbL;
+	if  (bbL+20 >= 600) bb[0].display = "none";
+	
+	bbT = parseInt(bb[1].top) + 1;
+	if  (bbT+20 < 400) bb[1].top = bbT;
+	if  (bbT+20 >= 400) bb[1].display = "none";
+	
+	bbL = parseInt(bb[1].left) + 6 * y;
+	if  (bbL+20 < 600) bb[1].left = bbL;
+	if  (bbL+20 >= 600) bb[1].display = "none";
+	
+	bbT = parseInt(bb[2].top) - (4 - x);
+	if  (bbT+20 < 400) bb[2].top = bbT;
+	if  (bbT+20 >= 400) bb[2].display = "none";
+	
+	bbL = parseInt(bb[2].left) + 6 * y;
+	if  (bbL+20 < 600) bb[2].left = bbL;
+	if  (bbL+20 >= 600) bb[2].display = "none";
+	
+	bbT = parseInt(bb[3].top) - (6 - x);
+	if  (bbT+20 < 400) bb[3].top = bbT;
+	if  (bbT+20 >= 400) bb[3].display = "none";
+	
+	bbL = parseInt(bb[3].left) + 2 * y;
+	if  (bbL+20 < 600) bb[3].left = bbL;
+	if  (bbL+20 >= 600) bb[3].display = "none";
+	
+	timeCheck = setTimeout('brokenProperties()',20);
+	if (x == 0.4)
+	{
+		fall = 1;
+	}
+	
+	if (x == 2)
+	{
+		hit.display = "none";
+		if ((readyR.display == "none") && (skateR.display == "none") && (holdR.display == "none"))
+		if ((readyL.display == "none") && (skateL.display == "none") && (holdL.display == "none"))
+		{
+			if (y == 1)
+			standR.display = "inline";
+			if (y == -1)
+			standL.display = "inline";
+			boxgravity2();
+		}
+	}
+	
+	if (x >= 12)
+	{
+		for (i=0; i <= 3; i++)
+		{
+			bb[i].display = "none";
+		}
+		
+		clearTimeout(timeCheck);
+		x = 0;
+		
+		for (i=0; i < BoxNum; i++)
+		{
+			if (parseInt(bx[i].left) == -120)
+			{
+				finish = 1;
+			}
+			else
+			{
+				finish = 0;
+				i = BoxNum;
+			}
+		}
+		if (finish == 1)
+		{
+			document.getElementById('winNote').style.display = "inline";
+			document.getElementById('endNote').focus();
+		}
+	}
+}
+//////////////////// End of Broken Box Properties ///////////////////
+
+</SCRIPT>
+</BODY>
+</HTML>
+
